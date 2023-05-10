@@ -29,6 +29,7 @@ kb_list = [inline_btn_1, inline_btn_2, inline_btn_3]
 fp = FilmParser()
 
 
+# Скачивание фильма и индикация состояний парсера
 @dp.callback_query_handler(lambda c: 1 <= int(c.data) <= 3, state=str(BotStates.DOWNLOADING))
 async def process_download_choice(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, f"Вы выбрали фильм №{callback_query.data}")
@@ -62,6 +63,7 @@ async def process_download_choice(callback_query: types.CallbackQuery):
         await state.reset_state()
 
 
+# Поиск фильма и предоставление выбора
 @dp.message_handler(state=str(BotStates.CHOOSING_FILM))
 async def choose_film(message: types.Message):
     loader = await message.answer("Ищем лучшие совпадения...")
@@ -81,6 +83,7 @@ async def choose_film(message: types.Message):
     await state.set_state(BotStates.DOWNLOADING)
 
 
+# Начало
 @dp.message_handler(state='*', commands=['start'])
 async def start_bot(message: types.Message):
     await message.answer("Напишите название фильма")

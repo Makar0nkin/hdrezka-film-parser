@@ -19,7 +19,6 @@ from moviepy.editor import VideoFileClip, concatenate_videoclips
 class ParserState(IntEnum):
     INIT = 0
     SEARCHING_URL = auto()
-    # MANAGING_DIRECTORIES = auto()
     DOWNLOADING = auto()
     UNITING_SEGMENTS = auto()
     MAKING_FINAL_VIDEO = auto()
@@ -36,17 +35,20 @@ class FilmParser:
         self.__film_data_list = None
         self.__current_segment: int = 0
 
+    # Установка нового запроса по названию и обновление данных по запросу
     def set_film_name_and_update_data(self, film_name):
         self.__state = ParserState.INIT
         self.film_name = film_name
         self.generate_film_list()
         self.__current_segment = 0
 
+    # Создание загрузочной ссылки
     def __create_download_url(self, base_url: str, seg_num: int) -> str:
         url_template = re.split(r'seg-\d+', base_url)
         url_template.insert(1, f"seg-{seg_num}")
         return ''.join(url_template)
 
+    # Сгенерировать список фильмов по запросу
     def generate_film_list(self):
         searchParams: dict[str, str] = {'do': 'search', 'subaction': 'search', 'q': self.film_name}
         searchURL: str = self.baseUrl + '/search/?' + urllib.parse.urlencode(searchParams)
